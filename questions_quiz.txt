@@ -1,0 +1,79 @@
+ import java.util.*;
+class Question {
+    String questionText;
+    String[] options;
+    int correctOption;
+
+    public Question(String questionText, String[] options, int correctOption) {
+        this.questionText = questionText;
+        this.options = options;
+        this.correctOption = correctOption;
+    }
+}
+
+public class QuizApp {
+    private List<Question> questions = new ArrayList<>();
+    private int score = 0;
+    private Map<Question, Boolean> results = new HashMap<>();
+
+    public QuizApp() {
+        loadQuestions();
+    }
+
+    private void loadQuestions() {
+        questions.add(new Question("What is the capital of India?", new String[]{"1. Mumbai", "2. Patna", "3. GreaterNoida", "4. NewDelhi"}, 4));
+        questions.add(new Question("What is 7 + 15?", new String[]{"1. 19", "2. 22", "3. 26", "4. 24"}, 2));
+        questions.add(new Question("Which planet is closest to the sun?", new String[]{"1. Earth", "2. Mars", "3. Mercury", "4. Saturn"}, 3));
+    }
+
+    private void startQuiz() {
+        Scanner scanner = new Scanner(System.in);
+
+        for (Question question : questions) {
+            System.out.println(question.questionText);
+            for (String option : question.options) {
+                System.out.println(option);
+            }
+
+            System.out.print("You have 10 seconds to answer (Enter the option number): ");
+            long startTime = System.currentTimeMillis();
+            long endTime = startTime + 10000;
+
+            while (System.currentTimeMillis() < endTime && !scanner.hasNextInt()) {
+                //waiting for time out
+            }
+
+            int userAnswer = scanner.hasNextInt() ? scanner.nextInt() : -1;
+
+            if (userAnswer == question.correctOption) {
+                score++;
+                results.put(question, true);
+            } else {
+                results.put(question, false);
+            }
+        }
+
+        displayResult();
+        scanner.close();
+    }
+
+    private void displayResult() {
+        System.out.println("\nQuiz finished!");
+        System.out.println("Your score: " + score + "/" + questions.size());
+
+        for (Map.Entry<Question, Boolean> entry : results.entrySet()) {
+            Question question = entry.getKey();
+            boolean correct = entry.getValue();
+            System.out.println("\nQuestion: " + question.questionText);
+            System.out.println("Your answer was " + (correct ? "correct" : "incorrect"));
+            System.out.println("Correct answer: " + question.options[question.correctOption - 1]);
+        }
+    }
+
+    public static void main(String[] args) {
+        QuizApp quiz = new QuizApp();
+        quiz.startQuiz();
+    }
+}
+
+
